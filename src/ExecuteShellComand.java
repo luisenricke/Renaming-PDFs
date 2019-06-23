@@ -2,7 +2,10 @@ import sun.awt.OSInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class ExecuteShellComand {
@@ -11,6 +14,8 @@ public class ExecuteShellComand {
         ManagerPDF files = new ManagerPDF();
         HandlerFiles env = new HandlerFiles();
         OSInfo.OSType OS = OSInfo.getOSType();
+        ArrayList<ThreadRunner> runners = new ArrayList<>();
+        ExecutorService executor = Executors.newCachedThreadPool();
 
         //C:\Users\xLcKe\Downloads\a.pdf
 
@@ -33,7 +38,11 @@ public class ExecuteShellComand {
                 File file = env.checkFile(path, nameFile);
                 files.addFile(file);
                 Process openPDF = env.openFile(files.getCommand(file.getName()));
+                openPDF.waitFor(2,TimeUnit.SECONDS);
 
+                runners.add( new ThreadRunner(file.getName(), new FilePDF(file, files.getCommand(file.getName()))));
+                runners.get(runners.size()-1).start();
+                executor.submit(runners.get(runners.size()-1));
                 /*
                 System.out.println("Inserte el nuevo nombre del archivo, para cancelar es con \'cancel\'");
                 String newNameFile = new Scanner(System.in).nextLine();
@@ -50,11 +59,16 @@ public class ExecuteShellComand {
 
                 }*/
             }
+
         } catch (IOException e) {
             e.printStackTrace();
+
         } /*catch (InterruptedException e) {
             e.printStackTrace();
-        } */finally {
+        } */ catch (InterruptedException e) {
+
+            e.printStackTrace();
+        } finally {
             System.out.println("Success!");
             System.exit(0);
         }

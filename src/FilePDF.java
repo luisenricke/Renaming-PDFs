@@ -27,4 +27,8 @@ public class FilePDF{
     public void setCommand(String command) {
         this.command = command;
     }
+
+    public boolean isOpen(){
+        return HandlerFiles.isOpenFile(file);
+    }
 }

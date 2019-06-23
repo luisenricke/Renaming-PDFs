@@ -29,7 +29,7 @@ public class HandlerFiles {
         return Runtime.getRuntime().exec(command);
     }
 
-    public boolean isOpenFile(File file) {
+    public static boolean isOpenFile(File file) {
         return !file.renameTo(file);
     }
 
