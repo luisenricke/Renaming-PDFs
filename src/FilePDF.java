@@ -1,23 +1,30 @@
-import java.io.File;
 
-public class FilePDF{
-    private File file;
+public class FilePDF {
     private String command;
+    private String newName;
+    private String name;
+    private String pathFile;
 
-    public FilePDF() {
-    }
-
-    public FilePDF(File file, String command) {
-        this.file = file;
+    public FilePDF(String pathFile, String name, String command) {
+        this.pathFile = pathFile;
+        this.name = name;
         this.command = command;
     }
 
-    public File getFile() {
-        return file;
+    public String getPathFile() {
+        return pathFile;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public void setPathFile(String pathFile) {
+        this.pathFile = pathFile;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCommand() {
@@ -28,7 +35,11 @@ public class FilePDF{
         this.command = command;
     }
 
-    public boolean isOpen(){
-        return HandlerFiles.isOpenFile(file);
+    public String getNewName() {
+        return newName;
+    }
+
+    public void setNewName(String newName) {
+        this.newName = newName;
     }
 }

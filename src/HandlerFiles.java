@@ -3,29 +3,24 @@ import sun.awt.OSInfo;
 import java.io.*;
 
 public class HandlerFiles {
+    private static final String ERROR_FILE = "Invalid file";
+    private static final String ERROR_DIRECTORY = "Invalid directory";
+    private static final String ERROR_OS = "Invalid OS";
+    private static OSInfo.OSType os = OSInfo.getOSType();
 
-    private final String ERROR_FILE = "Invalid file";
-    private final String ERROR_DIRECTORY = "Invalid directory";
-    private final String ERROR_OS = "Invalid OS";
-    private OSInfo.OSType os;
-
-    public HandlerFiles() {
-        this.os = OSInfo.getOSType();
-    }
-
-    public OSInfo.OSType getOS() {
+    public static OSInfo.OSType getOS() {
         return os;
     }
 
-    public void setOs(OSInfo.OSType os) {
-        this.os = os;
+    public static void setOs(OSInfo.OSType system) {
+        os = system;
     }
 
-    public Process openProgram(String command) throws IOException {
+    public static Process openProgram(String command) throws IOException {
         return Runtime.getRuntime().exec(command);
     }
 
-    public Process openFile(String command) throws IOException {
+    public static Process openFile(String command) throws IOException {
         return Runtime.getRuntime().exec(command);
     }
 
@@ -33,7 +28,7 @@ public class HandlerFiles {
         return !file.renameTo(file);
     }
 
-    public File checkFile(String path, String file) throws IOException {
+    public static File checkFile(String path, String file) throws IOException {
         File returnFile = new File(path + file);
         if (returnFile.exists())
             return returnFile;
@@ -41,46 +36,51 @@ public class HandlerFiles {
             throw new IOException(ERROR_FILE);
     }
 
-    public String parsePath(String path) throws IOException {
-        if (this.os == OSInfo.OSType.MACOSX || this.os == OSInfo.OSType.LINUX)
-            return path;
-        else if (this.os == OSInfo.OSType.WINDOWS)
-            return path.replace("\\", "\\\\");
-        else
-            throw new IOException(ERROR_OS);
-    }
-
-    public String checkDirectory(String path) throws IOException {
+    public static String checkDirectory(String path) throws IOException {
         if (new File(path).isDirectory())
             return path;
         else
             throw new IOException(ERROR_DIRECTORY);
     }
 
+    public static boolean renameFile(String path, String file, String newFile) throws IOException {
+        File oldFile = checkFile(path, file);
+        File changeFile = new File(path + newFile);
+        return oldFile.renameTo(changeFile);
+    }
+
+    public static String parsePath(String path) throws IOException {
+        if (os == OSInfo.OSType.MACOSX || os == OSInfo.OSType.LINUX)
+            return path;
+        else if (os == OSInfo.OSType.WINDOWS)
+            return path.replace("\\", "\\\\");
+        else
+            throw new IOException(ERROR_OS);
+    }
+
     public static void copyFileUsingStream(File source, File dest) throws IOException {
         InputStream is = null;
-        OutputStream os = null;
+        OutputStream osm = null;
         try {
             is = new FileInputStream(source);
-            os = new FileOutputStream(dest);
+            osm = new FileOutputStream(dest);
             byte[] buffer = new byte[1024];
             int length;
             while ((length = is.read(buffer)) > 0) {
-                os.write(buffer, 0, length);
+                osm.write(buffer, 0, length);
             }
         } finally {
             is.close();
-            os.close();
+            osm.close();
         }
     }
 
-    public Process clearWindows() throws IOException {
-        if (this.os == OSInfo.OSType.MACOSX || this.os == OSInfo.OSType.LINUX)
+    public static Process clearWindows() throws IOException {
+        if (os == OSInfo.OSType.MACOSX || os == OSInfo.OSType.LINUX)
             return Runtime.getRuntime().exec("clear");
-        else if (this.os == OSInfo.OSType.WINDOWS)
+        else if (os == OSInfo.OSType.WINDOWS)
             return Runtime.getRuntime().exec("cls");
         else
             throw new IOException(ERROR_OS);
-
     }
 }
